@@ -1,325 +1,279 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>我的專屬今嗓 KTV 歌單</title>
-    <style>
-        :root {
-            --primary-color: #3867d6;
-            --secondary-color: #2f3542;
-            --background-color: #f1f2f6;
-            --card-background: #ffffff;
-            --accent-color: #ff4757;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        body {
-            background-color: var(--background-color);
-            color: var(--secondary-color);
-            padding: 10px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 500px;
-            background: var(--card-background);
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            padding: 16px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        header h1 {
-            font-size: 1.4rem;
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
-
-        header p {
-            font-size: 0.8rem;
-            color: #747d8c;
-        }
-
-        .search-box {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border: 1.5px solid #dfe4ea;
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--primary-color);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            color: white;
-        }
-
-        .btn-search { background-color: var(--primary-color); }
-        .btn-clear { background-color: #747d8c; }
-
-        button:active { opacity: 0.8; }
-
-        /* 外部搜尋輔助（改用安全連結，絕不關閉原本網頁） */
-        .online-help-panel {
-            background: #fff0f2;
-            border: 1px solid #ffcccb;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .online-help-panel h3 {
-            font-size: 0.95rem;
-            color: var(--accent-color);
-        }
-
-        .online-help-panel p {
-            font-size: 0.8rem;
-            color: #57606f;
-            line-height: 1.4;
-        }
-
-        .link-btn {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: bold;
-            text-align: center;
-            display: block;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        /* 搜尋結果 */
-        .results-count {
-            font-size: 0.85rem;
-            color: #747d8c;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        .song-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .song-card {
-            border: 1px solid #eccc68;
-            background-color: #fffaf0;
-            border-radius: 10px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .song-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background-color: #ffa502;
-        }
-
-        .song-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .song-title {
-            font-size: 1.05rem;
-            font-weight: bold;
-            color: #2f3542;
-        }
-
-        .song-code {
-            font-size: 1.15rem;
-            font-weight: 900;
-            color: var(--accent-color);
-            background: #ffe8e8;
-            padding: 2px 10px;
-            border-radius: 20px;
-        }
-
-        .song-artist {
-            font-size: 0.85rem;
-            color: #57606f;
-        }
-
-        .song-lyrics {
-            font-size: 0.8rem;
-            color: #747d8c;
-            background: #f1f2f6;
-            padding: 6px;
-            border-radius: 6px;
-            margin-top: 3px;
-            font-style: italic;
-        }
-
-        .no-result {
-            text-align: center;
-            color: #a4b0be;
-            padding: 20px 10px;
-            font-size: 0.9rem;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>金嗓歌單查詢</title>
+<style>
+  :root{
+    --bg:#151014;
+    --panel:#1e171c;
+    --gold:#d4a94a;
+    --gold-dim:#8a7238;
+    --text:#f2ead9;
+    --sub:#a99a8f;
+    --line:#3a2f30;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image:
+      radial-gradient(ellipse at 50% -10%, rgba(212,169,74,0.12), transparent 60%);
+    color:var(--text);
+    font-family: "Noto Serif TC", "PMingLiU", serif;
+    min-height:100vh;
+    padding-bottom:40px;
+  }
+  header{
+    text-align:center;
+    padding:36px 20px 24px;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    letter-spacing:0.4em;
+    font-size:11px;
+    color:var(--gold-dim);
+    margin-bottom:8px;
+  }
+  h1{
+    margin:0;
+    font-size:28px;
+    font-weight:700;
+    letter-spacing:0.15em;
+    color:var(--gold);
+    text-shadow:0 0 18px rgba(212,169,74,0.35);
+  }
+  .sub{
+    color:var(--sub);
+    font-size:13px;
+    margin-top:10px;
+    letter-spacing:0.05em;
+  }
+  main{
+    max-width:520px;
+    margin:0 auto;
+    padding:24px 18px;
+  }
+  .search-box{
+    position:relative;
+    margin-bottom:18px;
+  }
+  input[type="text"]{
+    width:100%;
+    padding:14px 16px;
+    font-size:17px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    color:var(--text);
+    font-family:inherit;
+    outline:none;
+  }
+  input[type="text"]:focus{
+    border-color:var(--gold-dim);
+    box-shadow:0 0 0 3px rgba(212,169,74,0.12);
+  }
+  .hint{
+    font-size:12px;
+    color:var(--sub);
+    margin:8px 4px 0;
+  }
+  .count{
+    font-size:12px;
+    color:var(--gold-dim);
+    margin:20px 4px 10px;
+    letter-spacing:0.1em;
+  }
+  ul.results{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  li.card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .num{
+    font-family: "Courier New", monospace;
+    font-size:20px;
+    font-weight:700;
+    color:var(--bg);
+    background:var(--gold);
+    min-width:64px;
+    text-align:center;
+    padding:6px 4px;
+    border-radius:6px;
+    letter-spacing:0.02em;
+  }
+  .meta{
+    flex:1;
+    min-width:0;
+  }
+  .title{
+    font-size:17px;
+    font-weight:700;
+    color:var(--text);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .singer{
+    font-size:13px;
+    color:var(--sub);
+    margin-top:3px;
+  }
+  .period{
+    font-size:11px;
+    color:var(--gold-dim);
+    margin-top:2px;
+    letter-spacing:0.05em;
+  }
+  .empty{
+    text-align:center;
+    color:var(--sub);
+    font-size:14px;
+    padding:40px 10px;
+    line-height:1.8;
+  }
+  footer{
+    text-align:center;
+    color:var(--sub);
+    font-size:11px;
+    padding:30px 20px 10px;
+    letter-spacing:0.05em;
+  }
+</style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>🎤 今嗓 KTV 專屬查詢 🎤</h1>
-        <p>手機點歌不迷路！請在下方輸入您要找的歌曲</p>
-    </header>
+<header>
+  <div class="eyebrow">台語 · 新歌速遞</div>
+  <h1>金 嗓 歌 單</h1>
+  <div class="sub">輸入歌名或歌號查詢</div>
+</header>
 
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="輸入歌名、歌手或歌詞關鍵字..." autocomplete="off">
-        <div class="btn-group">
-            <button class="btn-search" onclick="searchSong()">搜尋</button>
-            <button class="btn-clear" onclick="clearSearch()">重設</button>
-        </div>
-    </div>
+<main>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="例如：命運 或 60218" autocomplete="off" inputmode="search">
+  </div>
+  <div class="hint">目前收錄「新歌速遞」共 <span id="totalCount"></span> 首（可自行擴充資料）</div>
 
-    <div id="resultsCount" class="results-count" style="display: none;"></div>
-    <div id="songList" class="song-list">
-        </div>
+  <div class="count" id="resultCount"></div>
+  <ul class="results" id="results"></ul>
+</main>
 
-    <div id="onlineHelpPanel" class="online-help-panel">
-        <h3>🔍 沒找到這首歌？</h3>
-        <p>點擊下方按鈕，會在新視窗幫你用 Google 搜尋此歌。你的查詢畫面不會消失，按「返回」或切換分頁就能立刻回來！</p>
-        <a id="btnGoogle" class="link-btn" target="_blank" rel="noopener noreferrer" href="#">🌐 在新分頁 Google 搜尋代碼</a>
-    </div>
-</div>
+<footer>資料整理自台灣點歌王 · 僅供個人點歌參考</footer>
 
 <script>
-    // 💡 【重要】請在這裡填入你家點歌本上真正的「代碼」與「歌名」！
-    // 格式：{ id: "真實點歌數字", title: "正確歌名", artist: "歌手", lyrics: "歌詞片段" }
-    const KTV_DATABASE = [
-        { id: "33521", title: "聽海", artist: "張惠妹", lyrics: "聽海哭的聲音 嘆惜著誰又被傷了心 卻還不清醒" },
-        { id: "42015", title: "溫柔", artist: "五月天", lyrics: "走在風中 今天陽光 突然好溫柔" },
-        { id: "88954", title: "刻在我心底的名字", artist: "盧廣仲", lyrics: "刻在我心底的名字 忘記了時間這回事" },
-        { id: "12547", title: "家後", artist: "江蕙", lyrics: "有一日咱若老 找無人甲咱友孝 我會陪你" },
-        { id: "65891", title: "愛拚才會贏", artist: "葉啟田", lyrics: "三分天注定 七分靠打拚 愛拚才會贏" }
-        // 👈 你可以在這裡像上面這樣一直複製、往下新增你家常用的歌單喔！
-    ];
+  // 歌曲資料：可自行增加更多筆，格式維持一致即可
+  const songs = [
+    {num:"60218", title:"命運", singer:"蔡義德", period:"115-07"},
+    {num:"78807", title:"心刻盤", singer:"劉家榮", period:"115-07"},
+    {num:"60220", title:"朱砂痣", singer:"謝宜君", period:"115-07"},
+    {num:"60219", title:"五福臨門", singer:"李晴", period:"115-07"},
+    {num:"60221", title:"天星望月", singer:"朱德寶+謝莉婷", period:"115-07"},
+    {num:"78817", title:"情歌歹寫", singer:"張宇", period:"115-07"},
+    {num:"78805", title:"山頂紅玫瑰", singer:"楊紫惠", period:"115-07"},
+    {num:"60222", title:"愛了無著時", singer:"曾瑋中+曼青", period:"115-07"},
+    {num:"78823", title:"感情十字路", singer:"廖婉君", period:"115-07"},
+    {num:"78826", title:"癡心落雨聲", singer:"方順吉+蔡宜汝", period:"115-07"},
+    {num:"78804", title:"一個人的黃昏", singer:"秀蘭瑪雅", period:"115-07"},
+    {num:"78824", title:"感謝一路有你", singer:"郭忠祐+蔡多多", period:"115-07"},
+    {num:"78816", title:"風颱風颱毋通來", singer:"曾瑋中", period:"115-07"},
+    {num:"78802", title:"3號出口", singer:"陳陽明+陳麗美", period:"115-07"},
+    {num:"78777", title:"Time", singer:"林宥嘉+黃奇斌", period:"115-06"},
+    {num:"78793", title:"乾杯", singer:"潘信維 Lil Pan+荒山亮", period:"115-06"},
+    {num:"78798", title:"歌壇", singer:"張秀卿", period:"115-06"},
+    {num:"78800", title:"憨翁", singer:"翁立友+林姍", period:"115-06"},
+    {num:"60217", title:"人生鏡", singer:"盧淑惠", period:"115-06"},
+    {num:"24501", title:"思念伊", singer:"王寶環", period:"115-06"},
+    {num:"24499", title:"怨相思", singer:"許惠華", period:"115-06"},
+    {num:"78790", title:"星伴月", singer:"鄔兆邦+向蕙玲", period:"115-06"},
+    {num:"60213", title:"算了吧", singer:"李明洋", period:"115-06"},
+    {num:"78799", title:"綴我飛", singer:"周星杰+黃妃", period:"115-06"},
+    {num:"78783", title:"失眠的人", singer:"曾沛慈", period:"115-06"},
+    {num:"60214", title:"思念的聲", singer:"歐陽樂", period:"115-06"},
+    {num:"24497", title:"破碎的夢", singer:"陳宥安", period:"115-06"},
+    {num:"24506", title:"夢像煙火", singer:"張志良", period:"115-06"},
+    {num:"78779", title:"十二月的妳", singer:"滅火器Fire Ex.", period:"115-06"},
+    {num:"78781", title:"今生無怨悔", singer:"吳俊宏+林良歡", period:"115-06"},
+    {num:"24510", title:"心碎相思淚", singer:"寒雲", period:"115-06"},
+    {num:"24507", title:"生疏的城市", singer:"游琦光", period:"115-06"},
+    {num:"24505", title:"阿母留的衫", singer:"王寶環", period:"115-06"},
+    {num:"24508", title:"秋風飄落葉", singer:"游琦光", period:"115-06"},
+    {num:"24504", title:"風中的堅強", singer:"王寶環", period:"115-06"},
+    {num:"24515", title:"時間刻心痕", singer:"張惠琦", period:"115-06"},
+    {num:"24513", title:"情定大橋頭", singer:"程美玉", period:"115-06"},
+    {num:"60215", title:"無你我嘸活", singer:"柯俊傑", period:"115-06"},
+    {num:"78796", title:"萬般皆是命", singer:"楊哲", period:"115-06"},
+    {num:"24502", title:"感情像海深", singer:"程安", period:"115-06"},
+    {num:"60216", title:"漂浪的情歌", singer:"許峻榮", period:"115-06"},
+    {num:"24512", title:"褪色的記治", singer:"程美玉", period:"115-06"},
+    {num:"24511", title:"為你付出一切", singer:"程美玉", period:"115-06"},
+    {num:"24498", title:"風吹散咱的情", singer:"陳宥安", period:"115-06"},
+    {num:"24509", title:"心像海湧袂平靜", singer:"游琦光", period:"115-06"},
+    {num:"24514", title:"拆袂開的一首詩", singer:"程美玉", period:"115-06"},
+    {num:"24503", title:"思念總在離別後", singer:"程安", period:"115-06"},
+    {num:"78757", title:"合適", singer:"江志豐+沈雅雯", period:"115-05"},
+    {num:"60212", title:"魯力", singer:"陳隨意", period:"115-05"},
+    {num:"78774", title:"黃金花", singer:"安心亞", period:"115-05"}
+  ];
 
-    // 支援手機按「確認/搜尋」鍵
-    document.getElementById('searchInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            searchSong();
-            this.blur(); // 收起手機鍵盤
-        }
+  const input = document.getElementById('searchInput');
+  const resultsEl = document.getElementById('results');
+  const countEl = document.getElementById('resultCount');
+  const totalEl = document.getElementById('totalCount');
+  totalEl.textContent = songs.length;
+
+  function render(list, query){
+    resultsEl.innerHTML = '';
+    if(query.trim() === ''){
+      countEl.textContent = '';
+      resultsEl.innerHTML = '<div class="empty">開始輸入歌名或歌號 &mdash; 例如「命運」或「602」</div>';
+      return;
+    }
+    if(list.length === 0){
+      countEl.textContent = '';
+      resultsEl.innerHTML = '<div class="empty">查無符合的歌曲<br>試試看歌名的一部分，或完整歌號</div>';
+      return;
+    }
+    countEl.textContent = '共找到 ' + list.length + ' 首';
+    list.forEach(s => {
+      const li = document.createElement('li');
+      li.className = 'card';
+      li.innerHTML =
+        '<div class="num">' + s.num + '</div>' +
+        '<div class="meta">' +
+          '<div class="title">' + s.title + '</div>' +
+          '<div class="singer">' + s.singer + '</div>' +
+          '<div class="period">' + s.period + '</div>' +
+        '</div>';
+      resultsEl.appendChild(li);
     });
+  }
 
-    function searchSong() {
-        const query = document.getElementById('searchInput').value.trim();
-        const queryLower = query.toLowerCase();
-        const songListDiv = document.getElementById('songList');
-        const countDiv = document.getElementById('resultsCount');
-        const helpPanel = document.getElementById('onlineHelpPanel');
-        
-        songListDiv.innerHTML = '';
-        helpPanel.style.display = 'none'; 
-        
-        if (!query) {
-            countDiv.style.display = 'none';
-            songListDiv.innerHTML = '<div class="no-result">💡 請先輸入歌名或歌詞喔！</div>';
-            return;
-        }
+  function search(query){
+    const q = query.trim();
+    if(q === '') return render([], q);
+    const isNumeric = /^\d+$/.test(q);
+    const filtered = songs.filter(s => {
+      if(isNumeric) return s.num.includes(q);
+      return s.title.includes(q) || s.num.includes(q) || s.singer.includes(q);
+    });
+    render(filtered, q);
+  }
 
-        // 搜尋本地
-        const results = KTV_DATABASE.filter(song => 
-            song.title.toLowerCase().includes(queryLower) || 
-            song.artist.toLowerCase().includes(queryLower) || 
-            song.lyrics.toLowerCase().includes(queryLower) ||
-            song.id.includes(queryLower)
-        );
-
-        if (results.length > 0) {
-            countDiv.style.display = 'block';
-            countDiv.textContent = `🔍 找到 ${results.length} 首符合的歌：`;
-            
-            results.forEach(song => {
-                const card = document.createElement('div');
-                card.className = 'song-card';
-                card.innerHTML = `
-                    <div class="song-header">
-                        <span class="song-title">${song.title}</span>
-                        <span class="song-code">${song.id}</span>
-                    </div>
-                    <div class="song-artist">🎤 ${song.artist}</div>
-                    <div class="song-lyrics">" ${song.lyrics} "</div>
-                `;
-                songListDiv.appendChild(card);
-            });
-        } else {
-            // 找不到時提示，並提供安全跳轉按鈕
-            countDiv.style.display = 'none';
-            songListDiv.innerHTML = '<div class="no-result">❌ 您的專屬歌單中目前沒有這首歌。</div>';
-            
-            // 設定 Google 搜尋連結，並強制在新分頁開啟
-            const encodedQuery = encodeURIComponent(query);
-            document.getElementById('btnGoogle').href = `https://www.google.com/search?q=${encodedQuery}+今嗓+KTV+點歌號碼`;
-            
-            helpPanel.style.display = 'flex';
-        }
-    }
-
-    function clearSearch() {
-        document.getElementById('searchInput').value = '';
-        document.getElementById('songList').innerHTML = '';
-        document.getElementById('resultsCount').style.display = 'none';
-        document.getElementById('onlineHelpPanel').style.display = 'none';
-    }
+  input.addEventListener('input', e => search(e.target.value));
+  render([], '');
 </script>
 
 </body>
