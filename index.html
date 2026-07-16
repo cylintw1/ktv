@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>今嗓 KTV 歌單快速查詢系統</title>
+    <title>今嗓 KTV 智慧聯網歌單查詢</title>
     <style>
         :root {
-            --primary-color: #ff4757;
+            --primary-color: #3867d6;
             --secondary-color: #2f3542;
             --background-color: #f1f2f6;
             --card-background: #ffffff;
-            --accent-color: #ffa502;
+            --accent-color: #ff4757;
         }
 
         * {
@@ -46,10 +46,6 @@
             font-size: 1.4rem;
             color: var(--primary-color);
             margin-bottom: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
         }
 
         header p {
@@ -64,17 +60,17 @@
             margin-bottom: 15px;
         }
 
-        input[type="text"], input[type="number"], textarea {
+        input[type="text"] {
             width: 100%;
             padding: 12px;
             border: 1.5px solid #dfe4ea;
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 1rem;
             outline: none;
             -webkit-appearance: none;
         }
 
-        input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+        input[type="text"]:focus {
             border-color: var(--primary-color);
         }
 
@@ -97,25 +93,58 @@
 
         .btn-search { background-color: var(--primary-color); }
         .btn-clear { background-color: #747d8c; }
-        .btn-add-toggle { background-color: #2ed573; }
 
         button:active { opacity: 0.8; }
 
-        /* 新增歌單面板 */
-        .add-panel {
-            background: #f8f9fa;
-            border: 1px dashed #2ed573;
+        /* 找不到歌曲時的聯網協助面板 */
+        .online-help-panel {
+            background: #fff0f2;
+            border: 1px solid #ffcccb;
             border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 15px;
+            padding: 15px;
+            margin-top: 15px;
             display: none;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .add-panel h3 {
+        .online-help-panel h3 {
             font-size: 0.95rem;
-            color: #2ed573;
+            color: var(--accent-color);
+        }
+
+        .online-help-panel p {
+            font-size: 0.8rem;
+            color: #57606f;
+            line-height: 1.4;
+        }
+
+        .link-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .link-btn {
+            background-color: white;
+            color: #333;
+            border: 1px solid #ced6e0;
+            padding: 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .link-btn:active {
+            background-color: #f1f2f6;
         }
 
         /* 搜尋結果 */
@@ -151,7 +180,7 @@
             top: 0;
             bottom: 0;
             width: 4px;
-            background-color: var(--accent-color);
+            background-color: #ffa502;
         }
 
         .song-header {
@@ -169,7 +198,7 @@
         .song-code {
             font-size: 1.15rem;
             font-weight: 900;
-            color: var(--primary-color);
+            color: var(--accent-color);
             background: #ffe8e8;
             padding: 2px 10px;
             border-radius: 20px;
@@ -178,16 +207,6 @@
         .song-artist {
             font-size: 0.85rem;
             color: #57606f;
-        }
-
-        .song-lyrics {
-            font-size: 0.8rem;
-            color: #747d8c;
-            background: #f1f2f6;
-            padding: 6px;
-            border-radius: 6px;
-            margin-top: 3px;
-            font-style: italic;
         }
 
         .no-result {
@@ -202,56 +221,51 @@
 
 <div class="container">
     <header>
-        <h1>🎤 今嗓 KTV 歌單快速查詢 🎤</h1>
-        <p>輸入歌名、歌手或歌詞，在手機上秒查點歌號碼！</p>
+        <h1>🎤 今嗓 KTV 智慧歌單查詢 🎤</h1>
+        <p>找不到沒關係！一鍵幫你搜尋全網點歌本資料</p>
     </header>
 
+    <!-- 搜尋區 -->
     <div class="search-box">
         <input type="text" id="searchInput" placeholder="輸入歌名、歌手或歌詞搜尋..." autocomplete="off">
         <div class="btn-group">
             <button class="btn-search" onclick="searchSong()">搜尋</button>
             <button class="btn-clear" onclick="clearSearch()">重設</button>
-            <button class="btn-add-toggle" onclick="toggleAddPanel()">➕ 新增</button>
         </div>
-    </div>
-
-    <div id="addPanel" class="add-panel">
-        <h3>➕ 手動新增點歌號碼</h3>
-        <input type="number" id="newCode" placeholder="輸入點歌數字 (例如: 12345)" pattern="[0-9]*">
-        <input type="text" id="newTitle" placeholder="輸入歌名">
-        <input type="text" id="newArtist" placeholder="輸入歌手 (選填)">
-        <textarea id="newLyrics" placeholder="輸入歌詞片段 (選填，方便以後用歌詞找歌)" rows="2"></textarea>
-        <button style="background-color: #2ed573;" onclick="saveNewSong()">儲存至本機歌單</button>
     </div>
 
     <div id="resultsCount" class="results-count" style="display: none;"></div>
     <div id="songList" class="song-list">
+        <!-- 本地查詢結果 -->
+    </div>
+
+    <!-- 當找不到時，智慧連網搜尋面板 -->
+    <div id="onlineHelpPanel" class="online-help-panel">
+        <h3>🔍 在本機找不到？試試一鍵線上搜尋！</h3>
+        <p>由於各大 KTV 系統有安全限制，請點擊下方按鈕，系統已幫你帶入關鍵字，可以直接到線上歌本或 Google 快速查出點歌代碼：</p>
+        <div class="link-buttons">
+            <!-- 這裡會動態填入帶有關鍵字的超連結 -->
+            <a id="btnGoogle" class="link-btn" target="_blank" href="#">🌐 Google 搜尋代碼</a>
+            <a id="btnYoutube" class="link-btn" target="_blank" href="#">📺 前往 YT 找歌詞</a>
         </div>
+    </div>
 </div>
 
 <script>
-    // 預置熱門歌單資料庫 (建議可以直接修改或擴充這段 list)
-    const DEFAULT_KTV_DATABASE = [
+    // 預置的大型常用歌單資料庫 (可自行繼續手動加進來)
+    const KTV_DATABASE = [
         { id: "10001", title: "聽海", artist: "張惠妹", lyrics: "聽海哭的聲音 嘆惜著誰又被傷了心 卻還不清醒" },
-        { id: "10002", title: "溫柔", artist: "五月天", lyrics: "走在風中 今天陽光 突然好溫柔 天空悄悄升起彩虹" },
-        { id: "10003", title: "刻在我心底的名字", artist: "盧廣仲", lyrics: "刻在我心底的名字 忘記了時間這回事 於是謊言說了一次又一次" },
-        { id: "10004", title: "倒帶", artist: "蔡依林", lyrics: "終於看開愛回不來 而你總是太晚明白 最後才把話說開 哭著求我留下來" },
-        { id: "10005", title: "愛如潮水", artist: "張信哲", lyrics: "不問你為何流眼淚 不在乎你心裡還有誰 且讓我給你安慰" },
-        { id: "20001", title: "家後", artist: "江蕙", lyrics: "有一日咱若老 找無人甲咱友孝 我會陪你 坐底椅寮" },
-        { id: "20002", title: "浪子回頭", artist: "茄子蛋", lyrics: "煙一支一支一支地點 酒一杯一杯一杯地吞 淚一滴一滴一滴地流" },
+        { id: "10002", title: "溫柔", artist: "五月天", lyrics: "走在風中 今天陽光 突然好溫柔" },
+        { id: "10003", title: "刻在我心底的名字", artist: "盧廣仲", lyrics: "刻在我心底的名字 忘記了時間這回事" },
+        { id: "10004", title: "倒帶", artist: "蔡依林", lyrics: "終於看開愛回不來 而你總是太晚明白" },
+        { id: "10005", title: "愛如潮水", artist: "張信哲", lyrics: "不問你為何流眼淚 不在乎你心裡還有誰" },
+        { id: "20001", title: "家後", artist: "江蕙", lyrics: "有一日咱若老 找無人甲咱友孝 我會陪你" },
+        { id: "20002", title: "浪子回頭", artist: "茄子蛋", lyrics: "煙一支一支一支地點 酒一杯一杯一杯地吞" },
         { id: "20003", title: "愛拚才會贏", artist: "葉啟田", lyrics: "三分天注定 七分靠打拚 愛拚才會贏" },
-        { id: "10006", title: "孤勇者", artist: "陳奕迅", lyrics: "愛你孤身走暗巷 愛你堅持的模樣 愛你對峙過絕望 不肯哭一場" },
-        { id: "10007", title: "起風了", artist: "吳青峰", lyrics: "逆著光行走 任風吹雨打 這一路上走走停停" }
+        { id: "10006", title: "孤勇者", artist: "陳奕迅", lyrics: "愛你孤身走暗巷 愛你堅持的模樣" }
     ];
 
-    // 初始化歌單：優先讀取手機本機暫存，如果沒有，就用預設的
-    let myKtvDatabase = JSON.parse(localStorage.getItem('my_ktv_songs'));
-    if (!myKtvDatabase) {
-        myKtvDatabase = DEFAULT_KTV_DATABASE;
-        localStorage.setItem('my_ktv_songs', JSON.stringify(myKtvDatabase));
-    }
-
-    // 支援手機按「搜尋」鍵
+    // 支援手機按「確認/搜尋」鍵
     document.getElementById('searchInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             searchSong();
@@ -259,13 +273,15 @@
         }
     });
 
-    // 搜尋功能
     function searchSong() {
-        const query = document.getElementById('searchInput').value.trim().toLowerCase();
+        const query = document.getElementById('searchInput').value.trim();
+        const queryLower = query.toLowerCase();
         const songListDiv = document.getElementById('songList');
         const countDiv = document.getElementById('resultsCount');
+        const helpPanel = document.getElementById('onlineHelpPanel');
         
         songListDiv.innerHTML = '';
+        helpPanel.style.display = 'none'; // 預設隱藏線上搜尋
         
         if (!query) {
             countDiv.style.display = 'none';
@@ -273,16 +289,17 @@
             return;
         }
 
-        const results = myKtvDatabase.filter(song => 
-            song.title.toLowerCase().includes(query) || 
-            (song.artist && song.artist.toLowerCase().includes(query)) || 
-            (song.lyrics && song.lyrics.toLowerCase().includes(query)) ||
-            song.id.includes(query)
+        // 搜尋本地
+        const results = KTV_DATABASE.filter(song => 
+            song.title.toLowerCase().includes(queryLower) || 
+            song.artist.toLowerCase().includes(queryLower) || 
+            song.lyrics.toLowerCase().includes(queryLower) ||
+            song.id.includes(queryLower)
         );
 
         if (results.length > 0) {
             countDiv.style.display = 'block';
-            countDiv.textContent = `🔍 找到 ${results.length} 首相關歌曲：`;
+            countDiv.textContent = `🔍 在本機歌單找到 ${results.length} 首歌曲：`;
             
             results.forEach(song => {
                 const card = document.createElement('div');
@@ -292,14 +309,26 @@
                         <span class="song-title">${song.title}</span>
                         <span class="song-code">${song.id}</span>
                     </div>
-                    <div class="song-artist">🎤 ${song.artist || '未填寫'}</div>
-                    ${song.lyrics ? `<div class="song-lyrics">“ ${song.lyrics} ”</div>` : ''}
+                    <div class="song-artist">🎤 ${song.artist}</div>
                 `;
                 songListDiv.appendChild(card);
             });
         } else {
+            // 本地找不到，觸發「智慧連網搜尋」
             countDiv.style.display = 'none';
-            songListDiv.innerHTML = '<div class="no-result">❌ 找不到符合的歌曲。<br>您可以點擊右上角【➕ 新增】把這首歌的點歌號碼記下來喔！</div>';
+            songListDiv.innerHTML = '<div class="no-result">❌ 本地暫無此歌曲資料。</div>';
+            
+            // 設定外部搜尋按鈕的連結
+            const encodedQuery = encodeURIComponent(query);
+            
+            // 1. 自動帶入搜尋 "今嗓 KTV 歌名 點歌代碼"
+            document.getElementById('btnGoogle').href = `https://www.google.com/search?q=${encodedQuery}+今嗓+KTV+點歌代碼`;
+            
+            // 2. 如果輸入的是歌詞，點這個按鈕可以直接去 YT 找歌名
+            document.getElementById('btnYoutube').href = `https://www.youtube.com/results?search_query=${encodedQuery}+歌詞`;
+            
+            // 秀出外連面板
+            helpPanel.style.display = 'flex';
         }
     }
 
@@ -307,49 +336,7 @@
         document.getElementById('searchInput').value = '';
         document.getElementById('songList').innerHTML = '';
         document.getElementById('resultsCount').style.display = 'none';
-    }
-
-    // 開啟/關閉手動新增面板
-    function toggleAddPanel() {
-        const panel = document.getElementById('addPanel');
-        panel.style.display = (panel.style.display === 'flex') ? 'none' : 'flex';
-    }
-
-    // 手動新增並存到手機中 (LocalStorage)
-    function saveNewSong() {
-        const id = document.getElementById('newCode').value.trim();
-        const title = document.getElementById('newTitle').value.trim();
-        const artist = document.getElementById('newArtist').value.trim();
-        const lyrics = document.getElementById('newLyrics').value.trim();
-
-        if (!id || !title) {
-            alert('⚠️ 點歌數字與歌名為必填欄位！');
-            return;
-        }
-
-        // 檢查號碼是否重複
-        const isExist = myKtvDatabase.some(song => song.id === id);
-        if (isExist) {
-            alert('⚠️ 此點歌號碼已存在，請確認是否輸入正確！');
-            return;
-        }
-
-        const newSong = { id, title, artist, lyrics };
-        myKtvDatabase.push(newSong);
-        localStorage.setItem('my_ktv_songs', JSON.stringify(myKtvDatabase));
-
-        alert(`✅ 成功新增《${title}》到您的專屬歌單中！`);
-        
-        // 清空欄位並隱藏
-        document.getElementById('newCode').value = '';
-        document.getElementById('newTitle').value = '';
-        document.getElementById('newArtist').value = '';
-        document.getElementById('newLyrics').value = '';
-        toggleAddPanel();
-
-        // 自動填入搜尋框，顯示剛剛新增的歌
-        document.getElementById('searchInput').value = title;
-        searchSong();
+        document.getElementById('onlineHelpPanel').style.display = 'none';
     }
 </script>
 
